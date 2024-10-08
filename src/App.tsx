@@ -1,44 +1,58 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
-
+import { Image } from 'primereact/image';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedImage, setSelectedImage] = useState('');
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-  const onUpload = () => {
-    console.log("bien")
+  const onSelect = (e) => {
+    const file = e.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      setSelectedImage(event.target.result);  // Convertir el archivo a una URL temporal
+    };
+    setResult(null);
+    reader.readAsDataURL(file);  // Convertir el archivo a base64 para mostrarlo
   };
-  
+  const onUpload = (e) => {
+    console.log(loading)
+    setLoading(true);
+    const response = e.xhr.response;
+    // Asume que el servidor devuelve un JSON con la URL de la imagen
+    
+    try {
+      const jsonResponse = JSON.parse(response);  // Parsear la respuesta si es JSON
+      setResult(jsonResponse);
+    } catch (error) {
+      console.error("Error al parsear la respuesta del servidor:", error);
+    }
+    console.log(loading)
+
+    setLoading(false);
+
+  };
+
   return (
-    <>
+    <>      <h1>{loading}</h1>
 
-      <Button label="Check" icon="pi pi-check" />
-      <FileUpload mode="basic"  url="https://tesisapi-h38w.onrender.com/analyze/" accept="image/*" maxFileSize={1000000} onUpload={onUpload} />
 
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Image src={selectedImage} width='300'></Image>
+      <FileUpload mode="basic"
+        name="file"
+        url="https://tesisapi-h38w.onrender.com/analyze/"
+        accept="image/*"
+        onUpload={onUpload}
+        onProgress={() => setLoading(true)}
+        onSelect={onSelect}  // Cuando seleccionas un archivo
+      />
+      <h1>{result}</h1>
+      {loading ? <ProgressSpinner /> : null}
+
     </>
   )
 }
