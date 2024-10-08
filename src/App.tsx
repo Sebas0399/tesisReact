@@ -9,32 +9,30 @@ function App() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const onSelect = (e) => {
-    const file = e.files[0];
-    const reader = new FileReader();
 
-    reader.onload = (event) => {
-      setSelectedImage(event.target.result);  // Convertir el archivo a una URL temporal
-    };
-    setResult(null);
-    reader.readAsDataURL(file);  // Convertir el archivo a base64 para mostrarlo
-  };
-  const onUpload = (e) => {
-    console.log(loading)
-    setLoading(true);
+  const onUpload = (e: any) => {
     const response = e.xhr.response;
-    // Asume que el servidor devuelve un JSON con la URL de la imagen
-    
     try {
-      const jsonResponse = JSON.parse(response);  // Parsear la respuesta si es JSON
+      const jsonResponse = JSON.parse(response);
       setResult(jsonResponse);
     } catch (error) {
       console.error("Error al parsear la respuesta del servidor:", error);
     }
-    console.log(loading)
+    finally {
+      console.log(response)
+    }
 
-    setLoading(false);
-
+  };
+  const onSelect = (e:any) => {
+    const file = e.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target && typeof event.target.result === 'string') {
+        setSelectedImage(event.target.result);  // Convertir el archivo a una URL temporal
+      }
+    };
+    setResult(null);
+    reader.readAsDataURL(file);  // Convertir el archivo a base64 para mostrarlo
   };
 
   return (
