@@ -21,6 +21,7 @@ function App() {
     finally {
       console.log(response)
     }
+    setLoading(false);
 
   };
   const onSelect = (e:any) => {
