@@ -9,7 +9,10 @@ function App() {
   const [selectedImage, setSelectedImage] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState(null);
+  const [selectedModel, setSelectedModel] = useState<{
+    name: string;
+    code: number;
+  } | null>(null);
   const modelos = [
     { name: "Darknet", code: 1 },
     { name: "MobileNet", code: 2 },
