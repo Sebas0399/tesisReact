@@ -59,7 +59,7 @@ function App() {
       <FileUpload
         mode="basic"
         name="file"
-        url={`https://tesisapi-h38w.onrender.com/${selectedModel?.code}`}
+        url={`https://tesisapi-h38w.onrender.com/analyze/${selectedModel?.code}`}
         accept="image/*"
         onUpload={onUpload}
         onProgress={() => setLoading(true)}
