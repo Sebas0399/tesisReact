@@ -1,23 +1,17 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./App.css";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Dropdown } from "primereact/dropdown";
 
 function App() {
   const [selectedImage, setSelectedImage] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<{
-    name: string;
-    code: number;
-  } | null>(null);
-  const modelos = [
-    { name: "Darknet", code: 1 },
-    { name: "MobileNet", code: 2 },
-    { name: "Resnet", code: 3 },
-  ];
+  const [isCameraOpen, setIsCameraOpen] = useState(false); // Estado para controlar la cámara
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const onUpload = (e: any) => {
     const response = e.xhr.response;
     try {
@@ -30,6 +24,7 @@ function App() {
     }
     setLoading(false);
   };
+
   const onSelect = (e: any) => {
     const file = e.files[0];
     const reader = new FileReader();
@@ -42,30 +37,67 @@ function App() {
     reader.readAsDataURL(file); // Convertir el archivo a base64 para mostrarlo
   };
 
+  const openCamera = async () => {
+    setIsCameraOpen(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch (error) {
+      console.error("No se pudo acceder a la cámara:", error);
+      setIsCameraOpen(false);
+    }
+  };
+
+  const captureImage = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext("2d");
+      if (context) {
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+        context.drawImage(videoRef.current, 0, 0);
+        const imageData = canvasRef.current.toDataURL("image/png");
+        setSelectedImage(imageData); // Asigna la imagen capturada
+        closeCamera();
+      }
+    }
+  };
+
+  const closeCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraOpen(false);
+  };
+
   return (
     <>
-      <h1>{selectedModel ? selectedModel.code : "No model selected"}</h1>
-      <div className="card flex justify-content-center">
-        <Dropdown
-          value={selectedModel}
-          onChange={(e) => setSelectedModel(e.value)}
-          options={modelos}
-          optionLabel="name"
-          placeholder="Select a City"
-          className="w-full md:w-14rem"
-        />
-      </div>
-      <Image src={selectedImage} width="300"></Image>
+      <Image src={selectedImage} width="300" alt="Imagen seleccionada o capturada" />
       <FileUpload
         mode="basic"
         name="file"
-        url={`https://antonyuwu-tesisapi.hf.space/analyze/${selectedModel?.code}`}
+        url={`https://antonyuwu-tesisapi.hf.space/analyze/2`}
         accept="image/*"
         onUpload={onUpload}
         onProgress={() => setLoading(true)}
-        onSelect={onSelect} // Cuando seleccionas un archivo
+        onSelect={onSelect}
       />
+      <button onClick={openCamera}>Abrir Cámara</button>
+      {isCameraOpen && (
+        <div>
+          <video ref={videoRef} style={{ width: "300px" }}></video>
+          <button onClick={captureImage}>Capturar Imagen</button>
+          <button onClick={closeCamera}>Cerrar Cámara</button>
+        </div>
+      )}
+      <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
       <h1>{result}</h1>
+
       {loading ? <ProgressSpinner /> : null}
     </>
   );
