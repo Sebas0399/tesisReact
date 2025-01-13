@@ -39,7 +39,7 @@ function App() {
       <FileUpload
         mode="basic"
         name="file"
-        url={`https://antonyuwu-tesisapi.hf.space/analyze/2}`}
+        url="https://antonyuwu-tesisapi.hf.space/analyze/2"
         accept="image/*"
         onUpload={onUpload}
         onProgress={() => setLoading(true)}
