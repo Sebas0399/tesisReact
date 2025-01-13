@@ -3,8 +3,7 @@ import "./App.css";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Button } from "primereact/button";
-import axios from "axios";
+
 function App() {
   const [selectedImage, setSelectedImage] = useState("");
   const [result, setResult] = useState(null);
