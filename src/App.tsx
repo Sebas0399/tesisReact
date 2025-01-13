@@ -59,11 +59,35 @@ function App() {
         canvasRef.current.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);
         const imageData = canvasRef.current.toDataURL("image/png");
-        setSelectedImage(imageData); // Asigna la imagen capturada
+        setSelectedImage(imageData); // Muestra la imagen en el componente Image
+  
+        // Convertir base64 a Blob y luego a File
+        const blob = dataURItoBlob(imageData);
+        const file = new File([blob], "captured-image.png", { type: "image/png" });
+  
+        // Añadir al FileUpload
+        const fileUploadElement = document.querySelector(".p-fileupload");
+        if (fileUploadElement && fileUploadElement.fileInput) {
+          fileUploadElement.fileInput.files = new DataTransfer().files;
+          fileUploadElement.files.push(file); // Agrega el archivo al componente
+          fileUploadElement.upload(); // Sube el archivo
+        }
         closeCamera();
       }
     }
   };
+  
+  const dataURItoBlob = (dataURI: string) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const buffer = new ArrayBuffer(byteString.length);
+    const dataView = new Uint8Array(buffer);
+    for (let i = 0; i < byteString.length; i++) {
+      dataView[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([buffer], { type: mimeString });
+  };
+  
 
   const closeCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
