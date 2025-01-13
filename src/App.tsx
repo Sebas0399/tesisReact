@@ -61,10 +61,30 @@ function App() {
         context.drawImage(videoRef.current, 0, 0);
         const imageData = canvasRef.current.toDataURL("image/png");
         setSelectedImage(imageData); // Asigna la imagen capturada
+
+          // Crear un objeto "file-like" y pasar a onSelect
+      const blob = dataURLToBlob(imageData);
+      const file = new File([blob], "captured-image.png", { type: "image/png" });
+      const event = { files: [file] };
+      onSelect(event); // Llamar a la función onSelect con el archivo simulado
+      
         closeCamera();
+        
       }
     }
   };
+  // Convertir dataURL a Blob
+const dataURLToBlob = (dataURL: string) => {
+  const parts = dataURL.split(",");
+  const byteString = atob(parts[1]);
+  const mimeString = parts[0].split(":")[1].split(";")[0];
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < byteString.length; i++) {
+    uint8Array[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([arrayBuffer], { type: mimeString });
+};
 
   const closeCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
@@ -76,17 +96,6 @@ function App() {
     setIsCameraOpen(false);
   };
 
-  const postImage= async () => {
-    await axios.post(
-      'https://antonyuwu-tesisapi.hf.space/analyze/2',
-      selectedImage,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-  }
 
   return (
     <>
@@ -100,7 +109,6 @@ function App() {
         onProgress={() => setLoading(true)}
         onSelect={onSelect}
       />
-      <Button onClick={postImage}></Button>
       <button onClick={openCamera}>Abrir Cámara</button>
       {isCameraOpen && (
         <div>
