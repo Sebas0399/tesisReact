@@ -4,7 +4,6 @@ import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Card } from "primereact/card";
-import { Button } from "primereact/button";
 
 function App() {
   const [selectedImage, setSelectedImage] = useState("");
@@ -53,7 +52,7 @@ function App() {
             {selectedImage ? (
               <Image src={selectedImage} width="300" className="uploaded-image" />
             ) : (
-              <p className="centered-text">Selecciona una imagen para analizar</p>
+              <p>Selecciona una imagen para analizar</p>
             )}
             <FileUpload
               mode="basic"
@@ -72,7 +71,7 @@ function App() {
           {loading && (
             <div className="loading-container">
               <ProgressSpinner />
-              <p className="centered-text">Analizando imagen...</p>
+              <p>Analizando imagen...</p>
             </div>
           )}
 
@@ -80,24 +79,27 @@ function App() {
           {result && (
             <div className="results-container">
               <h2>Resultado:</h2>
-              <p className="centered-text">{result}</p>
+              <p>{result}</p>
               <h3>Porcentajes de Precisión:</h3>
-              <ul className="centered-list">
+              <ul>
                 <li>
                   Industria:{" "}
+                  // @ts-ignore
                   {parseFloat(resultPorcentaje.Industria || 0).toFixed(3)} %
                 </li>
                 <li>
                   Golpeada:{" "}
+                  // @ts-ignore
                   {parseFloat(resultPorcentaje.Golpeada || 0).toFixed(3)} %
                 </li>
                 <li>
                   Partida:{" "}
+                  // @ts-ignore
                   {parseFloat(resultPorcentaje.Partida || 0).toFixed(3)} %
                 </li>
               </ul>
               <h3>Tiempo de Predicción:</h3>
-              <p className="centered-text">{tiempo} segundos.</p>
+              <p>{tiempo} segundos.</p>
             </div>
           )}
         </Card>
