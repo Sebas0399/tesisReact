@@ -1,0 +1,76 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+  }
+  
+  .main-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center; /* Centrar el título */
+  }
+  
+  .centered-container {
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+    text-align: center; /* Centrar todo el contenido del contenedor */
+  }
+  
+  .card-container {
+    text-align: center; /* Asegurar que todo dentro del Card esté centrado */
+  }
+  
+  .image-upload-container {
+    margin-bottom: 20px;
+  }
+  
+  .uploaded-image {
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+  
+  .file-upload-button {
+    margin-top: 10px;
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .results-container {
+    margin-top: 20px;
+    text-align: center; /* Centrar los resultados */
+  }
+  
+  
+  .results-container ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left; /* Alinear los elementos de la lista a la izquierda */
+    display: inline-block; /* Hacer que la lista se comporte como un bloque centrado */
+  }
+  
+  .results-container li {
+    margin-bottom: 5px;
+  }
+  
+  .centered-text {
+    text-align: center; /* Centrar texto individual */
+  }
+  
+  .centered-list {
+    margin: 0 auto; /* Centrar la lista */
+    display: inline-block; /* Hacer que la lista se comporte como un bloque centrado */
+  }
