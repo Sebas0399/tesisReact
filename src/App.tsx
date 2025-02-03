@@ -84,17 +84,14 @@ function App() {
               <ul>
                 <li>
                   Industria:{" "}
-                  // @ts-ignore
                   {parseFloat(resultPorcentaje.Industria || 0).toFixed(3)} %
                 </li>
                 <li>
                   Golpeada:{" "}
-                  // @ts-ignore
                   {parseFloat(resultPorcentaje.Golpeada || 0).toFixed(3)} %
                 </li>
                 <li>
                   Partida:{" "}
-                  // @ts-ignore
                   {parseFloat(resultPorcentaje.Partida || 0).toFixed(3)} %
                 </li>
               </ul>
