@@ -43,7 +43,7 @@ function App() {
   return (
     <div className="app-container">
       {/* Título principal */}
-      <h1 className="main-title">Tesis Uvillas</h1>
+      <h1 className="main-title">Detección de Tipos de Uvillas</h1>
 
       {/* Contenedor principal centrado */}
       <div className="centered-container">
