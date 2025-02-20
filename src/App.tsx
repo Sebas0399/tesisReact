@@ -1,61 +1,14 @@
 import { Key, useState, useEffect, useRef } from "react";
-import "./App.css";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Card } from "primereact/card";
-import { Menubar } from "primereact/menubar";
+import NavBar from "./components/navbar";
+import "./App.css"; // Importa tus estilos personalizados
 
 function App() {
-  const icon = <i className="pi pi-search"></i>;
   const fileUploadRef = useRef<any>(null);
 
-  const items = [
-    {
-      label: "Home",
-      icon: "pi pi-home",
-    },
-    {
-      label: "Features",
-      icon: "pi pi-star",
-    },
-    {
-      label: "Projects",
-      icon: "pi pi-search",
-      items: [
-        {
-          label: "Components",
-          icon: "pi pi-bolt",
-        },
-        {
-          label: "Blocks",
-          icon: "pi pi-server",
-        },
-        {
-          label: "UI Kit",
-          icon: "pi pi-pencil",
-        },
-        {
-          label: "Templates",
-          icon: "pi pi-palette",
-          items: [
-            {
-              label: "Apollo",
-              icon: "pi pi-palette",
-            },
-            {
-              label: "Ultima",
-              icon: "pi pi-palette",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Contact",
-      icon: "pi pi-envelope",
-    },
-  ];
   const [selectedImage, setSelectedImage] = useState("");
   const [result, setResult] = useState(null);
   const [tiempo, setTiempo] = useState(null);
@@ -84,6 +37,8 @@ function App() {
   };
 
   const uploadInvoice = async (invoiceFile: any) => {
+    fileUploadRef.current.uploading = true;
+
     let formData = new FormData();
     formData.append("file", invoiceFile);
     console.log(formData);
@@ -98,7 +53,7 @@ function App() {
     setResult(jsonResponse.clase_predicha);
     setResultPorcentaje(jsonResponse.porcentajes_de_precisión);
     setTiempo(parseFloat(jsonResponse.time).toFixed(3)); // Formatear tiempo a 3 decimales
-    console.log(response);
+    fileUploadRef.current.clear(); // Limpiar el input de archivo
   };
 
   const onSelect = (e: any) => {
@@ -130,97 +85,109 @@ function App() {
   };
 
   return (
-    <div>
-      <div className="card">
-        <Menubar model={items} />
-      </div>
+    <>
+      {" "}
+      <NavBar />
+      <div className="min-h-screen flex flex-col items-center bg-gray-100">
+        <div className="container mx-auto p-4">
+          {/* Título principal */}
+          <h1 className="main-title text-4xl font-bold text-center mb-8">
+            Tesis Uvillas
+          </h1>
 
-      <div className="app-container">
-        {/* Título principal */}
-        <h1 className="main-title">Tesis Uvillas</h1>
-
-        {/* Contenedor principal centrado */}
-        <div className="centered-container">
-          <Card title="Clasificador de Imágenes" className="card-container">
-            <div className="image-upload-container">
-              {selectedImage ? (
-                <Image
-                  src={selectedImage}
-                  width="300"
-                  className="uploaded-image"
+          {/* Contenedor principal centrado */}
+          <div className="flex justify-center">
+            <Card className="w-full md:w-1/2 p-4 centered-container">
+              <h2 className="text-2xl font-semibold mb-4 text-center">
+                Clasificador de Imágenes
+              </h2>
+              <div className="flex flex-col items-center image-upload-container">
+                {selectedImage ? (
+                  <Image
+                    src={selectedImage}
+                    width="300"
+                    className="mb-4 uploaded-image"
+                  />
+                ) : (
+                  <p className="mb-4">Selecciona una imagen para analizar</p>
+                )}
+                <FileUpload
+                  ref={fileUploadRef}
+                  mode="basic"
+                  name="file"
+                  customUpload
+                  uploadHandler={invoiceUploadHandler}
+                  accept="image/*"
+                  onSelect={onSelect}
+                  auto
+                  chooseLabel="Seleccionar Imagen"
+                  className="mb-4 file-upload-button"
                 />
-              ) : (
-                <p>Selecciona una imagen para analizar</p>
+              </div>
+
+              {/* Indicador de carga */}
+              {loading && (
+                <div className="flex flex-col items-center mb-4 loading-container">
+                  <ProgressSpinner />
+                  <p>Analizando imagen...</p>
+                </div>
               )}
-              <FileUpload
-                ref={fileUploadRef}
-                mode="basic"
-                name="file"
-                customUpload
-                uploadHandler={invoiceUploadHandler}
-                accept="image/*"
-                onSelect={onSelect}
-                auto
-                chooseLabel="Seleccionar Imagen"
-                className="file-upload-button"
-              />
-            </div>
 
-            {/* Indicador de carga */}
-            {loading && (
-              <div className="loading-container">
-                <ProgressSpinner />
-                <p>Analizando imagen...</p>
-              </div>
+              {/* Resultados */}
+              {result && (
+                <div className="mt-4 text-center results-container">
+                  <h2 className="text-xl font-semibold">Resultado:</h2>
+                  <p>{result}</p>
+                  <h3 className="text-lg font-semibold mt-2">
+                    Porcentajes de Precisión:
+                  </h3>
+                  <ul className="list-disc list-inside centered-list">
+                    <li>
+                      Industria:{" "}
+                      {parseFloat(resultPorcentaje.Industria || 0).toFixed(3)} %
+                    </li>
+                    <li>
+                      Golpeada:{" "}
+                      {parseFloat(resultPorcentaje.Golpeada || 0).toFixed(3)} %
+                    </li>
+                    <li>
+                      Partida:{" "}
+                      {parseFloat(resultPorcentaje.Partida || 0).toFixed(3)} %
+                    </li>
+                  </ul>
+                  <h3 className="text-lg font-semibold mt-2">
+                    Tiempo de Predicción:
+                  </h3>
+                  <p>{tiempo} segundos.</p>
+                </div>
+              )}
+            </Card>
+          </div>
+        </div>
+        <div className="container mx-auto p-4 muestra">
+          <h2 className="text-2xl font-semibold text-center mb-4">
+            Pruebe con imágenes de muestra
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {images.map(
+              (image: string | undefined, index: Key | null | undefined) => (
+                <div key={index} className="overflow-hidden rounded-lg">
+                  <Image
+                    src={image}
+                    alt={`Image ${index}`}
+                    width="250"
+                    height="250"
+                    loading="eager"
+                    onClick={() => handleSampleImageClick(image)}
+                    className="cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+              )
             )}
-
-            {/* Resultados */}
-            {result && (
-              <div className="results-container">
-                <h2>Resultado:</h2>
-                <p>{result}</p>
-                <h3>Porcentajes de Precisión:</h3>
-                <ul>
-                  <li>
-                    Industria:{" "}
-                    {parseFloat(resultPorcentaje.Industria || 0).toFixed(3)} %
-                  </li>
-                  <li>
-                    Golpeada:{" "}
-                    {parseFloat(resultPorcentaje.Golpeada || 0).toFixed(3)} %
-                  </li>
-                  <li>
-                    Partida:{" "}
-                    {parseFloat(resultPorcentaje.Partida || 0).toFixed(3)} %
-                  </li>
-                </ul>
-                <h3>Tiempo de Predicción:</h3>
-                <p>{tiempo} segundos.</p>
-              </div>
-            )}
-          </Card>
+          </div>
         </div>
       </div>
-      <div className="muestra">
-        <h2>Pruebe con imágenes de muestra</h2>
-        <div className="card flex justify-content-center image-grid">
-          {images.map(
-            (image: string | undefined, index: Key | null | undefined) => (
-              <Image
-                key={index}
-                src={image}
-                alt={`Image ${index}`}
-                width="250"
-                height="250"
-                loading="eager"
-                onClick={() => handleSampleImageClick(image)}
-                style={{ cursor: "pointer" }}
-              />
-            )
-          )}
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 
