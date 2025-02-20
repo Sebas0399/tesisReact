@@ -5,6 +5,7 @@ import About from "./pages/about";
 import Documentation from "./pages/documentation";
 import GettingStartedPage from "./pages/docs/getting-started";
 import ModelsAndDatasetsPage from "./pages/docs/models-and-datasets";
+import ResourcesPage from "./pages/docs/resources";
 import "./App.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
@@ -18,6 +19,9 @@ ReactDOM.createRoot(root).render(
       <Route path="documentation" element={<Documentation />} />
       <Route path="docs/getting-started" element={<GettingStartedPage />} />
       <Route path="docs/models-and-datasets" element={<ModelsAndDatasetsPage />} />
+      <Route path="docs/resources" element={<ResourcesPage />} />
+
+      
     </Routes>
   </BrowserRouter>
 );

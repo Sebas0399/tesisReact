@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Book, Code, Database, Folder } from "lucide-react";
+import { Book, Database, Folder } from "lucide-react";
 import NavBar from "../components/navbar";
 export default function DocsPage() {
   const docSections = [
@@ -8,13 +8,6 @@ export default function DocsPage() {
       title: "Guía de Inicio",
       href: "/docs/getting-started",
       description: "Aprende cómo comenzar con nuestros modelos de IA.",
-    },
-    {
-      icon: Code,
-      title: "Referencia de código",
-      href: "/docs/code-reference",
-      description:
-        "Documentación detallada de nuestro código de entrenamiento IA.",
     },
     {
       icon: Database,
