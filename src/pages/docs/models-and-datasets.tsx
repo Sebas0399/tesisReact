@@ -157,7 +157,7 @@ export default function ModelsAndDatasetsPage() {
                 El dataset de origen se encuentra en el siguiente enlace:
               </p>
               <a
-                href="https://www.kaggle.com/code/dogukantabak/image-classification-64-classes-animal"
+                href="https://www.kaggle.com/datasets/antonyarguello/uvillas"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
